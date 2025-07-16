@@ -5,6 +5,8 @@ import Modal from "./Modal";
 import { FormEventHandler, useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteTodo, editTodo } from "@/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface TaskProps {
     task: ITask;
@@ -43,8 +45,8 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                     <form onSubmit={handleSubmitEditTodo}>
                         <h3 className="font-bold text-lg">Edit Task</h3>
                         <div className="modal-action">
-                            <input value={taskToEdit} onChange={e => setTaskToEdit(e.target.value)} type="text" placeholder="Type here" className="input input-bordered w-full" />
-                            <button type="submit" className="btn">Submit</button>
+                            <Input value={taskToEdit} onChange={e => setTaskToEdit(e.target.value)} type="text" placeholder="Type here" className="input input-bordered w-full" />
+                            <Button type="submit" className="btn">Submit</Button>
                         </div>
                     </form>
                 </Modal>

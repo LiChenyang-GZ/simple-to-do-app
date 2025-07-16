@@ -1,6 +1,7 @@
 import React from "react";
 import { ITask } from "@/types/tasks";
 import Task from "./Task";
+import { Table } from "@/components/ui/table";
 
 interface TodoListProps {
   tasks: ITask[];
@@ -8,7 +9,7 @@ interface TodoListProps {
 
 const TodoList: React.FC<TodoListProps> = ({ tasks = []}) => {
     return <div className="overflow-x-auto">
-  <table className="table">
+  <Table className="table">
     {/* head */}
     <thead>
       <tr>
@@ -31,7 +32,7 @@ const TodoList: React.FC<TodoListProps> = ({ tasks = []}) => {
       ))}
       
     </tbody>
-  </table>
+  </Table>
 </div>;
 };
 
