@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { deleteTodo, editTodo } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface TaskProps {
     task: ITask;
@@ -18,13 +19,15 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     const [taskToEdit, setTaskToEdit] = useState<string>(task.text);
     const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
     // const [taskDelete, setNewTaskDelete] = useState<boolean>(false);
-    
+    const [descriptionToEdit, setDescriptionToEdit] = useState(task.description);
 
+    
     const handleSubmitEditTodo: FormEventHandler<HTMLFormElement> = async(e) => {
         e.preventDefault();
         await editTodo({
             id: task.id,
-            text: taskToEdit
+            text: taskToEdit,
+            description: descriptionToEdit // Assuming description is part of the task
         });
         setModalEdit(false); // Close modal after submission
         router.refresh(); // Refresh the page to show the new task
@@ -39,13 +42,25 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     return (
         <tr key={task.id}>
             <td className="w-full">{task.text}</td>
+            <td className="w-full">{task.description}</td>
             <td className="flex gap-5">
                 <FiEdit onClick={() => setModalEdit(true)} cursor="pointer" className="text-blue-500" size={25}/>
                 <Modal modalOpen={modalEdit} setModalOpen={setModalEdit}>
                     <form onSubmit={handleSubmitEditTodo}>
                         <h3 className="font-bold text-lg">Edit Task</h3>
                         <div className="modal-action">
-                            <Input value={taskToEdit} onChange={e => setTaskToEdit(e.target.value)} type="text" placeholder="Type here" className="input input-bordered w-full" />
+                            <Input 
+                                value={taskToEdit} 
+                                onChange={e => setTaskToEdit(e.target.value)} 
+                                type="text" 
+                                placeholder="Type here" 
+                                className="input input-bordered w-full" />
+                            <Textarea 
+                                value={descriptionToEdit}
+                                onChange={e => setDescriptionToEdit(e.target.value)}
+                                placeholder="Description"
+                                className="textarea textarea-bordered w-full mt-2"
+                            />
                             <Button type="submit" className="btn">Submit</Button>
                         </div>
                     </form>

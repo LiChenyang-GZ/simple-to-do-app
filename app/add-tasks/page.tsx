@@ -6,9 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormData = {
     text: string;
+    description: string; // Optional field for description
 };
 
 
@@ -31,7 +33,8 @@ export default function AddTasksPage() {
     const onSubmit = async (data: FormData) => {
         await addTodo({
             id: uuidv4(),
-            text: data.text
+            text: data.text,
+            description: data.text
         });
         reset();
         router.push('/'); // Redirect to the home page after adding the task
@@ -54,6 +57,11 @@ export default function AddTasksPage() {
                         type="text"
                         placeholder="Type here"
                         className="input input-bordered w-full"
+                    />
+                    <Textarea 
+                        {...register("description", { required: false })}
+                        placeholder="Description"
+                        className="textarea textarea-bordered w-full mt-2"
                     />
                     <Button type="submit" className="btn">Submit</Button>
                 </div>
