@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { taskSchema, TaskFormData } from "@/schemas/taskSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { $strip } from "zod/v4/core";
 
 interface TaskFormProps {
     defaultValue: {
@@ -13,11 +16,18 @@ interface TaskFormProps {
 }
 
 export default function TaskForm({defaultValue, onSubmit }: TaskFormProps) {
-    const { register, handleSubmit } = useForm({
+    // const { register, handleSubmit } = useForm({
+    //     defaultValues: {
+    //         text: defaultValue.text,
+    //         description: defaultValue.description,
+    //     },
+    // });
+    const { register, handleSubmit, formState: { errors } } = useForm<TaskFormData>({
+        resolver: zodResolver(taskSchema),
         defaultValues: {
             text: defaultValue.text,
             description: defaultValue.description,
-        },
+        }
     });
 
     return (
@@ -27,11 +37,13 @@ export default function TaskForm({defaultValue, onSubmit }: TaskFormProps) {
                 type="text" 
                 placeholder="Task Title" 
                 className="input input-bordered w-full" />
+            {errors.text && <p className="text-red-500">{errors.text.message}</p>}
             <Textarea 
                 {...register("description")} 
                 placeholder="Task Description" 
                 className="textarea textarea-bordered w-full" />
             <Button type="submit" className="btn btn-primary">Submit</Button>
+            {errors.description && <p className="text-red-500">{errors.description.message}</p>}
         </form>
     );
 }
