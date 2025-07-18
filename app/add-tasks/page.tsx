@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
+import TaskForm from "../components/TaskForm";
 
 type FormData = {
     text: string;
@@ -34,7 +35,7 @@ export default function AddTasksPage() {
         await addTodo({
             id: uuidv4(),
             text: data.text,
-            description: data.text
+            description: data.description
         });
         reset();
         router.push('/'); // Redirect to the home page after adding the task
@@ -43,16 +44,16 @@ export default function AddTasksPage() {
 
     return (
         <main className="flex justify-center items-center min-h-screen">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            {/* <form onSubmit={handleSubmit(onSubmit)}>
                 <h3 className="text-2xl font-bold mb-4 text-black">Add new Task</h3>
-                <div className="modal-action">
+                <div className="modal-action"> */}
                     {/* <Input 
                         value={newTaskValue} 
                         onChange={e => setNewTaskValue(e.target.value)} 
                         type="text" 
                         placeholder="Type here" 
                         className="input input-bordered w-full" /> */}
-                    <Input 
+                    {/* <Input 
                         {...register("text", { required: true })}
                         type="text"
                         placeholder="Type here"
@@ -63,9 +64,11 @@ export default function AddTasksPage() {
                         placeholder="Description"
                         className="textarea textarea-bordered w-full mt-2"
                     />
-                    <Button type="submit" className="btn">Submit</Button>
-                </div>
-            </form>
+                    <Button type="submit" className="btn">Submit</Button> */}
+                    
+                {/* </div>
+            </form> */}
+            <TaskForm defaultValue={{ text: "", description: "" }} onSubmit={onSubmit} />
         </main>
     )
 }

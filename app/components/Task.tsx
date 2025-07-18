@@ -8,6 +8,7 @@ import { deleteTodo, editTodo } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import TaskForm from "./TaskForm";
 
 interface TaskProps {
     task: ITask;
@@ -46,7 +47,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
             <td className="flex gap-5">
                 <FiEdit onClick={() => setModalEdit(true)} cursor="pointer" className="text-blue-500" size={25}/>
                 <Modal modalOpen={modalEdit} setModalOpen={setModalEdit}>
-                    <form onSubmit={handleSubmitEditTodo}>
+                    {/* <form onSubmit={handleSubmitEditTodo}>
                         <h3 className="font-bold text-lg">Edit Task</h3>
                         <div className="modal-action">
                             <Input 
@@ -63,7 +64,19 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                             />
                             <Button type="submit" className="btn">Submit</Button>
                         </div>
-                    </form>
+                    </form> */}
+                    <TaskForm
+                            defaultValue={{ text: taskToEdit, description: descriptionToEdit }}
+                            onSubmit={async (data) => {
+                                await editTodo({
+                                    id: task.id,
+                                    text: data.text,
+                                    description: data.description
+                                });
+                                setModalEdit(false);
+                                router.refresh(); // Refresh the page to show the updated task
+                            }}
+                        />
                 </Modal>
                 <FiTrash2 onClick={() => setOpenModalDeleted(true)} cursor="pointer" className="text-red-500" size={25}/>
                 <Modal modalOpen={openModalDeleted} setModalOpen={setOpenModalDeleted}>
