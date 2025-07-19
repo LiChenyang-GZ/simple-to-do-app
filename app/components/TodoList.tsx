@@ -11,11 +11,11 @@ const TodoList: React.FC<TodoListProps> = ({ tasks = []}) => {
     return <div className="overflow-x-auto">
   <Table className="table">
     {/* head */}
-    <thead>
+    <thead className="text-black text-center">
       <tr>
         <th>Tasks</th>
+        <th>Description</th>
         <th>Actions</th>
-
 
       </tr>
     </thead>
