@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addTodo } from "@/api";
 import { v4 as uuidv4 } from 'uuid';
@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import TaskForm from "../components/TaskForm";
+import { useTodoStore } from "../store/todoStore";
+
 
 type FormData = {
     text: string;
@@ -20,6 +22,7 @@ export default function AddTasksPage() {
     const router = useRouter();
     // const [newTaskValue, setNewTaskValue] = useState<string>("");
     const { register, handleSubmit, reset } = useForm<FormData>();
+    const { addTodo } = useTodoStore();
 
     // const handleSubmitNewTodo = async (e) => {
     //     e.preventDefault();
@@ -33,7 +36,7 @@ export default function AddTasksPage() {
     // };
     const onSubmit = async (data: FormData) => {
         await addTodo({
-            id: uuidv4(),
+            // id: uuidv4(),
             text: data.text,
             description: data.description
         });
