@@ -46,7 +46,7 @@ export default function AddTasksPage() {
     }
 
     return (
-        <main className="flex justify-center items-center min-h-screen">
+        <main className="flex flex-col justify-center items-center min-h-screen">
             {/* <form onSubmit={handleSubmit(onSubmit)}>
                 <h3 className="text-2xl font-bold mb-4 text-black">Add new Task</h3>
                 <div className="modal-action"> */}
@@ -71,6 +71,7 @@ export default function AddTasksPage() {
                     
                 {/* </div>
             </form> */}
+            <h3 className="text-2xl font-bold mb-4 text-black">Add new Task</h3>
             <TaskForm defaultValue={{ text: "", description: "" }} onSubmit={onSubmit} />
         </main>
     )
