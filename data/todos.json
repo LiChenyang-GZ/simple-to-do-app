@@ -34,6 +34,16 @@
       "id": "fa437088-bc46-4687-8f10-91956a825f36",
       "text": "Add task form",
       "description": "use task-form2"
+    },
+    {
+      "id": "4675",
+      "text": "use state for add todo",
+      "description": "add Addtodo func in todoStore"
+    },
+    {
+      "id": "e1c3",
+      "text": "try12",
+      "description": "try23"
     }
   ]
 }
