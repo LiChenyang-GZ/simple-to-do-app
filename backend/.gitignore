@@ -1,0 +1,31 @@
+# .NET build artefacts
+bin/
+obj/
+bin\Debug/
+
+# User / IDE
+*.user
+*.suo
+.vs/
+*.userosscache
+*.sln.docstates
+
+# EF / local DB files
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# Secrets / env
+appsettings.Development.json
+appsettings.*.local
+.env
+.env.*.local
+
+# Logs and temp
+*.log
+logs/
+coverage/
+
+# macOS
+.DS_Store
