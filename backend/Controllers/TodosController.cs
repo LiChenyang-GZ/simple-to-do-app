@@ -13,16 +13,23 @@ public class TodosController : ControllerBase
     public TodosController(AppDbContext db) => _db = db;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _db.Todos.ToListAsync());
+    public async Task<ActionResult<List<Todo>>> GetAll()
+    {
+        var list = await _db.Todos.ToListAsync();
+        return Ok(list);
+    }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id) {
+    public async Task<ActionResult<Todo>> Get(int id)
+    {
         var t = await _db.Todos.FindAsync(id);
-        return t is null ? NotFound() : Ok(t);
+        if (t is null) return NotFound();
+        return t;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Todo todo) {
+    public async Task<ActionResult<Todo>> Create(Todo todo)
+    {
         _db.Todos.Add(todo);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = todo.Id }, todo);
