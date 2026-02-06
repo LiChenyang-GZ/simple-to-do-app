@@ -3,6 +3,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260206124407_AddCategoryToTodo")]
+    partial class AddCategoryToTodo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,6 +42,9 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TodoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
@@ -49,21 +55,24 @@ namespace backend.Migrations
                             Id = 1,
                             Color = "#60A5FA",
                             Description = "Personal tasks",
-                            Name = "Personal"
+                            Name = "Personal",
+                            TodoId = 0
                         },
                         new
                         {
                             Id = 2,
                             Color = "#F97316",
                             Description = "Work related",
-                            Name = "Work"
+                            Name = "Work",
+                            TodoId = 0
                         },
                         new
                         {
                             Id = 3,
                             Color = "#34D399",
                             Description = "Learning and study",
-                            Name = "Study"
+                            Name = "Study",
+                            TodoId = 0
                         });
                 });
 
@@ -78,6 +87,9 @@ namespace backend.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CategoryId1")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Completed")
                         .HasColumnType("bit");
 
@@ -90,7 +102,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryId1");
 
                     b.ToTable("Todos");
 
@@ -98,7 +110,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 1,
-                            CategoryId = 1,
+                            CategoryId = 0,
                             Completed = false,
                             Description = "Milk, eggs, bread",
                             Text = "Buy groceries"
@@ -106,7 +118,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 2,
-                            CategoryId = 2,
+                            CategoryId = 0,
                             Completed = false,
                             Description = "Monthly sales report",
                             Text = "Write report"
@@ -114,7 +126,7 @@ namespace backend.Migrations
                         new
                         {
                             Id = 3,
-                            CategoryId = 1,
+                            CategoryId = 0,
                             Completed = true,
                             Description = "Evening walk",
                             Text = "Walk dog"
@@ -124,17 +136,10 @@ namespace backend.Migrations
             modelBuilder.Entity("Backend.Models.Todo", b =>
                 {
                     b.HasOne("Backend.Models.Category", "Category")
-                        .WithMany("Todos")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("CategoryId1");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Backend.Models.Category", b =>
-                {
-                    b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
         }
