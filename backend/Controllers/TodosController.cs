@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.DTOs;
 
 namespace Backend.Controllers;
 
@@ -13,16 +14,43 @@ public class TodosController : ControllerBase
     public TodosController(AppDbContext db) => _db = db;
 
     [HttpGet]
-    public async Task<ActionResult<List<Todo>>> GetAll()
+    public async Task<ActionResult<List<TodoDto>>> GetAll()
     {
-        var list = await _db.Todos.ToListAsync();
-        return Ok(list);
+        var todos = await _db.Todos
+        .Include(t => t.Category)
+        .Select(t => new TodoDto {
+            Id = t.Id,
+            Text = t.Text,
+            Description = t.Description,
+            Completed = t.Completed,
+            Category = t.Category == null ? null : new CategoryDto {
+                Id = t.Category.Id,
+                Name = t.Category.Name,
+                Color = t.Category.Color
+            }
+        })
+        .ToListAsync();
+        return Ok(todos);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Todo>> Get(int id)
+    public async Task<ActionResult<TodoDto>> Get(int id)
     {
-        var t = await _db.Todos.FindAsync(id);
+        var t = await _db.Todos
+        .Include(x => x.Category)
+        .Where(x => x.Id == id)
+        .Select(x => new TodoDto {
+            Id = x.Id,
+            Text = x.Text,
+            Description = x.Description,
+            Completed = x.Completed,
+            Category = x.Category == null ? null : new CategoryDto {
+                Id = x.Category.Id,
+                Name = x.Category.Name,
+                Color = x.Category.Color
+            }
+        })
+        .FirstOrDefaultAsync();
         if (t is null) return NotFound();
         return t;
     }

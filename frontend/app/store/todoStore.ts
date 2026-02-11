@@ -9,7 +9,7 @@ type TodoStore = {
     setTasks: (tasks: ITask[]) => void;
     addTodo: (task: Omit<ITask, 'id'>) => Promise<void>;
     editTodo: (updatedTask: ITask) => Promise<void>;
-    deleteTodo: (id: string) => Promise<void>;
+    deleteTodo: (id: number) => Promise<void>;
 };
 
 export const useTodoStore = create<TodoStore>((set, get) => ({
@@ -36,7 +36,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
     }));
     },
 
-    deleteTodo: async (id: string) => {
+    deleteTodo: async (id: number) => {
         await apiDeleteTodo(id);
         set((state) => ({
             todos: state.todos.filter((task) => task.id !== id),
