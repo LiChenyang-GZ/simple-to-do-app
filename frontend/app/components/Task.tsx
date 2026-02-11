@@ -21,7 +21,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     const [taskToEdit, setTaskToEdit] = useState<string>(task.text);
     const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
     // const [taskDelete, setNewTaskDelete] = useState<boolean>(false);
-    const [descriptionToEdit, setDescriptionToEdit] = useState(task.description);
+    const [descriptionToEdit, setDescriptionToEdit] = useState(task.description ?? "");
 
     const { editTodo } = useTodoStore();
     const { deleteTodo } = useTodoStore();
@@ -37,7 +37,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         router.refresh(); // Refresh the page to show the new task
     }
 
-    const handleDeleteTask = async (id: string) => {
+    const handleDeleteTask = async (id: number) => {
         await deleteTodo(id);
         setOpenModalDeleted(false); // Close modal after deletion
         router.refresh(); // Refresh the page to show the updated task list
@@ -45,7 +45,22 @@ const Task: React.FC<TaskProps> = ({ task }) => {
 
     return (
         <tr key={task.id}>
-            <td className="w-full">{task.text}</td>
+            <td className="w-full text-center">{task.text}</td>
+            <td className="w-full">
+                <span
+                    style={{
+                    display: "inline-block",
+                    padding: "0.125rem 0.5rem",
+                    borderRadius: 6,
+                    backgroundColor: task.category?.color || "#FA0101",
+                    color: "#0F172A",
+                    fontWeight: 600,
+                    fontSize: "0.875rem"
+                    }}
+                >
+                    {task.category?.name ?? "No category"}
+                </span>
+            </td>
             <td className="w-full">{task.description}</td>
             <td className="flex gap-5">
                 <FiEdit onClick={() => setModalEdit(true)} cursor="pointer" className="text-blue-500" size={25}/>
