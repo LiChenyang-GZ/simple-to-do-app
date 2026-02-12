@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
 using Backend.DTOs;
+using Backend.Commands;
+using Backend.Queries;
+using Backend;
 
 namespace Backend.Controllers;
 
@@ -10,73 +13,60 @@ namespace Backend.Controllers;
 [Route("api/[controller]")]
 public class TodosController : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public TodosController(AppDbContext db) => _db = db;
+    private readonly AddTodoCommandHandler _addHandler;
+    private readonly UpdateTodoCommandHandler _updateHandler;
+    private readonly DeleteTodoCommandHandler _deleteHandler;
+    private readonly GetTodosQueryHandler _getAllHandler;
+    private readonly GetTodoByIdQueryHandler _getByIdHandler;
+    public TodosController(
+        AddTodoCommandHandler addHandler,
+        UpdateTodoCommandHandler updateHandler,
+        DeleteTodoCommandHandler deleteHandler,
+        GetTodosQueryHandler getAllHandler,
+        GetTodoByIdQueryHandler getByIdHandler)
+    {
+        _addHandler = addHandler;
+        _updateHandler = updateHandler;
+        _deleteHandler = deleteHandler;
+        _getAllHandler = getAllHandler;
+        _getByIdHandler = getByIdHandler;
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<TodoDto>>> GetAll()
     {
-        var todos = await _db.Todos
-        .Include(t => t.Category)
-        .Select(t => new TodoDto {
-            Id = t.Id,
-            Text = t.Text,
-            Description = t.Description,
-            Completed = t.Completed,
-            Category = t.Category == null ? null : new CategoryDto {
-                Id = t.Category.Id,
-                Name = t.Category.Name,
-                Color = t.Category.Color
-            }
-        })
-        .ToListAsync();
+        var todos = await _getAllHandler.Handle(new GetTodosQuery(), CancellationToken.None);
         return Ok(todos);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TodoDto>> Get(int id)
     {
-        var t = await _db.Todos
-        .Include(x => x.Category)
-        .Where(x => x.Id == id)
-        .Select(x => new TodoDto {
-            Id = x.Id,
-            Text = x.Text,
-            Description = x.Description,
-            Completed = x.Completed,
-            Category = x.Category == null ? null : new CategoryDto {
-                Id = x.Category.Id,
-                Name = x.Category.Name,
-                Color = x.Category.Color
-            }
-        })
-        .FirstOrDefaultAsync();
-        if (t is null) return NotFound();
-        return t;
+        var todo = await _getByIdHandler.Handle(new GetTodoByIdQuery { Id = id }, CancellationToken.None);
+        if (todo == null) return NotFound();
+        return todo;
     }
 
     [HttpPost]
-    public async Task<ActionResult<Todo>> Create(Todo todo)
+    public async Task<ActionResult<TodoDto>> Create([FromBody] AddTodoCommand command, CancellationToken ct)
     {
-        _db.Todos.Add(todo);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(Get), new { id = todo.Id }, todo);
+        var created = await _addHandler.Handle(command, ct);
+        return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Todo todo) {
-        if (id != todo.Id) return BadRequest();
-        _db.Entry(todo).State = EntityState.Modified;
-        await _db.SaveChangesAsync();
-        return NoContent();
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateTodoCommand command, CancellationToken ct)
+    {
+        if (id != command.Id) return BadRequest();
+        var ok = await _updateHandler.Handle(command, ct);
+        return ok ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id) {
-        var t = await _db.Todos.FindAsync(id);
-        if (t is null) return NotFound();
-        _db.Todos.Remove(t);
-        await _db.SaveChangesAsync();
-        return NoContent();
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        var ok = await _deleteHandler.Handle(new DeleteTodoCommand { Id = id }, ct);
+        return ok ? NoContent() : NotFound();
     }
+        
 }
