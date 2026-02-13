@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using Backend.Data;
-using Backend.Models;
 
 namespace Backend.Commands
 {
@@ -34,7 +29,7 @@ namespace Backend.Commands
         {
             _logger.LogInformation("Updating todo {Id}", command.Id);
 
-            var entity = await _db.Todos.FindAsync(new object[] { command.Id }, ct);
+            var entity = await _db.Todos.FindAsync(command.Id, ct);
             if (entity == null)
             {
                 _logger.LogWarning("Todo {Id} not found", command.Id);

@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Backend.Data;
-using Backend.Models;
 using Backend.DTOs;
 using Backend.Commands;
 using Backend.Queries;
@@ -33,8 +31,9 @@ public class TodosController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TodoDto>>> GetAll()
+    public async Task<ActionResult<List<TodoDto>>> GetAll(CancellationToken ct)
     {
+        // TODO:  read cancellation token
         var todos = await _getAllHandler.Handle(new GetTodosQuery(), CancellationToken.None);
         return Ok(todos);
     }
@@ -50,16 +49,16 @@ public class TodosController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TodoDto>> Create([FromBody] AddTodoCommand command, CancellationToken ct)
     {
-        var created = await _addHandler.Handle(command, ct);
-        return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+        var id = await _addHandler.Handle(command, ct);
+        return CreatedAtAction(nameof(Get), new { id }, new { id });
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateTodoCommand command, CancellationToken ct)
     {
         if (id != command.Id) return BadRequest();
-        var ok = await _updateHandler.Handle(command, ct);
-        return ok ? NoContent() : NotFound();
+        var success = await _updateHandler.Handle(command, ct);
+        return success ? NoContent() : NotFound();
     }
 
     [HttpDelete("{id}")]

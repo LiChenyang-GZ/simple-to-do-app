@@ -29,7 +29,7 @@ namespace Backend.Commands
         {
             _logger.LogInformation("Deleting todo {Id}", command.Id);
 
-            var entity = await _db.Todos.FindAsync(new object[] { command.Id }, ct);
+            var entity = await _db.Todos.FindAsync(command.Id, ct);
             if (entity == null)
             {
                 _logger.LogWarning("Todo {Id} not found", command.Id);

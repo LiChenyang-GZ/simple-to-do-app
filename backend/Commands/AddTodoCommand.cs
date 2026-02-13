@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 using Backend.Data;
-using Backend.DTOs;
-using Backend.Models;
+using Backend.Data.Entities;
 
 namespace Backend.Commands
 {
@@ -29,7 +23,7 @@ namespace Backend.Commands
             _logger = logger;
         }
 
-        public async Task<TodoDto> Handle(AddTodoCommand command, CancellationToken ct)
+        public async Task<int> Handle(AddTodoCommand command, CancellationToken ct)
         {
             _logger.LogInformation("Creating todo: {Text}", command.Text);
 
@@ -44,25 +38,7 @@ namespace Backend.Commands
             _db.Todos.Add(entity);
             await _db.SaveChangesAsync(ct);
 
-            var dto = await _db.Todos
-                .Include(t => t.Category)
-                .Where(t => t.Id == entity.Id)
-                .Select(t => new TodoDto
-                {
-                    Id = t.Id,
-                    Text = t.Text,
-                    Description = t.Description,
-                    Completed = t.Completed,
-                    Category = t.Category == null ? null : new CategoryDto
-                    {
-                        Id = t.Category.Id,
-                        Name = t.Category.Name,
-                        Color = t.Category.Color
-                    }
-                })
-                .FirstOrDefaultAsync(ct);
-
-            return dto!;
+            return entity.Id;
         }
     }
 }
