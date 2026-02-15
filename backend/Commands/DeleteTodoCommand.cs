@@ -25,21 +25,21 @@ namespace Backend.Commands
             _logger = logger;
         }
 
-        public async Task<bool> Handle(DeleteTodoCommand command, CancellationToken ct)
+        public async Task<int?> Handle(DeleteTodoCommand command, CancellationToken ct)
         {
             _logger.LogInformation("Deleting todo {Id}", command.Id);
 
-            var entity = await _db.Todos.FindAsync(command.Id, ct);
-            if (entity == null)
+            var newTodo = await _db.Todos.FindAsync(command.Id, ct);
+            if (newTodo == null)
             {
                 _logger.LogWarning("Todo {Id} not found", command.Id);
-                return false;
+                return null;
             }
 
-            _db.Todos.Remove(entity);
+            _db.Todos.Remove(newTodo);
             await _db.SaveChangesAsync(ct);
             _logger.LogInformation("Deleted todo {Id}", command.Id);
-            return true;
+            return newTodo.Id;
         }
     }
 }

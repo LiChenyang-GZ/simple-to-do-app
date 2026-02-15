@@ -33,15 +33,14 @@ public class TodosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<TodoDto>>> GetAll(CancellationToken ct)
     {
-        // TODO:  read cancellation token
-        var todos = await _getAllHandler.Handle(new GetTodosQuery(), CancellationToken.None);
+        var todos = await _getAllHandler.Handle(new GetTodosQuery(), ct);
         return Ok(todos);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TodoDto>> Get(int id)
+    public async Task<ActionResult<TodoDto>> Get(int id, CancellationToken ct)
     {
-        var todo = await _getByIdHandler.Handle(new GetTodoByIdQuery { Id = id }, CancellationToken.None);
+        var todo = await _getByIdHandler.Handle(new GetTodoByIdQuery { Id = id }, ct);
         if (todo == null) return NotFound();
         return todo;
     }
@@ -64,8 +63,9 @@ public class TodosController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        var ok = await _deleteHandler.Handle(new DeleteTodoCommand { Id = id }, ct);
-        return ok ? NoContent() : NotFound();
+        var deletedId = await _deleteHandler.Handle(new DeleteTodoCommand { Id = id }, ct);
+        if (deletedId == null) return NotFound();
+        return Ok(new { id = deletedId });
     }
         
 }

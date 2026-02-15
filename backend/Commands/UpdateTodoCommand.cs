@@ -29,17 +29,17 @@ namespace Backend.Commands
         {
             _logger.LogInformation("Updating todo {Id}", command.Id);
 
-            var entity = await _db.Todos.FindAsync(command.Id, ct);
-            if (entity == null)
+            var updateTodo = await _db.Todos.FindAsync(command.Id, ct);
+            if (updateTodo == null)
             {
                 _logger.LogWarning("Todo {Id} not found", command.Id);
                 return false;
             }
 
-            entity.Text = command.Text;
-            entity.Description = command.Description;
-            entity.Completed = command.Completed;
-            entity.CategoryId = command.CategoryId;
+            updateTodo.Text = command.Text;
+            updateTodo.Description = command.Description;
+            updateTodo.Completed = command.Completed;
+            updateTodo.CategoryId = command.CategoryId;
 
             await _db.SaveChangesAsync(ct);
             _logger.LogInformation("Updated todo {Id}", command.Id);

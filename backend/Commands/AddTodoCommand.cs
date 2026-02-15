@@ -27,7 +27,7 @@ namespace Backend.Commands
         {
             _logger.LogInformation("Creating todo: {Text}", command.Text);
 
-            var entity = new Todo
+            var newTodo = new Todo
             {
                 Text = command.Text,
                 Description = command.Description,
@@ -35,10 +35,10 @@ namespace Backend.Commands
                 CategoryId = command.CategoryId
             };
 
-            _db.Todos.Add(entity);
+            _db.Todos.Add(newTodo);
             await _db.SaveChangesAsync(ct);
 
-            return entity.Id;
+            return newTodo.Id;
         }
     }
 }
