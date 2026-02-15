@@ -1,6 +1,7 @@
 
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
+using Backend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddCors(options =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddCqrsHandlers();
 
 var app = builder.Build();
 

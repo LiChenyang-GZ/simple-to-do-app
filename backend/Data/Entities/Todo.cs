@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace Backend.Models
+namespace Backend.Data.Entities
 {
     public class Todo
     {
