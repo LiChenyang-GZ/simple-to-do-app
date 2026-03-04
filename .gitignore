@@ -1,0 +1,25 @@
+# IDEs
+.idea/
+.vs/
+*.swp
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
+
+# .NET (Backend)
+**/bin/
+**/obj/
+backend/appsettings.Development.json
+
+# Node (Frontend)
+**/node_modules/
+**/.next/
+**/out/
+**/build/
+frontend/.env*
+
+# DB
+*.db
+*.sqlite
