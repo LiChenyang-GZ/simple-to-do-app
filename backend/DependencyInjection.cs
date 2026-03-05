@@ -1,5 +1,5 @@
-using Backend.Commands;
-using Backend.Queries;
+using Backend.Modules.TaskItem.CQRS.Commands;
+using Backend.Modules.TaskItem.CQRS.Queries;
 
 namespace Backend
 {

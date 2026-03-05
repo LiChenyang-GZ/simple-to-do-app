@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using Backend.Data;
 
-namespace Backend.Commands
+namespace Backend.Modules.TaskItem.CQRS.Commands
 {
     public class DeleteTodoCommand
     {

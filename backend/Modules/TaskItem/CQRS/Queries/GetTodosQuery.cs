@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.DTOs;
 
-namespace Backend.Queries
+namespace Backend.Modules.TaskItem.CQRS.Queries
 {
     public class GetTodosQuery { }
 
