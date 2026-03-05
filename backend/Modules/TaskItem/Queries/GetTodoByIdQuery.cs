@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
-using Backend.DTOs;
+using backend.Modules.Category.DTO;
+using backend.Modules.TaskItem.DTO;
 
 namespace Backend.Modules.TaskItem.Queries
 {

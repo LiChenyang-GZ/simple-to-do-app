@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
-using Backend.DTOs;
+using backend.Modules.Category.DTO;
+using backend.Modules.TaskItem.DTO;
 
 namespace Backend.Modules.TaskItem.Queries
 {

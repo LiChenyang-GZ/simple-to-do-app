@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Backend.DTOs;
 using Backend.Modules.TaskItem.Commands;
+using backend.Modules.TaskItem.DTO;
 using Backend.Modules.TaskItem.Queries;
 
 
