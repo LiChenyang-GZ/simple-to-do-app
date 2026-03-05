@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Backend.Data;
 
-namespace Backend.Modules.TaskItem.CQRS.Commands
+namespace Backend.Modules.TaskItem.Commands
 {
     public class UpdateTodoCommand
     {

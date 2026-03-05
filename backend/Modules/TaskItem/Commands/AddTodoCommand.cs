@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Backend.Data;
 using Backend.Data.Entities;
 
-namespace Backend.Modules.TaskItem.CQRS.Commands
+namespace Backend.Modules.TaskItem.Commands
 {
     public class AddTodoCommand
     {

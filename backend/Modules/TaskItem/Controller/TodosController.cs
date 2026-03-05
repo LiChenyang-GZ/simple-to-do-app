@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Backend.DTOs;
-using Backend.Modules.TaskItem.CQRS.Commands;
-using Backend.Modules.TaskItem.CQRS.Queries;
+using Backend.Modules.TaskItem.Commands;
+using Backend.Modules.TaskItem.Queries;
 
 
 namespace Backend.Modules.TaskItem.Controller;
