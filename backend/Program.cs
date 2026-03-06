@@ -2,6 +2,7 @@
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Backend;
+using Backend.Shared.ExceptionHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddModule();
 
 var app = builder.Build();
@@ -34,5 +37,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors();
+app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
