@@ -1,17 +1,12 @@
-using Backend.Commands;
-using Backend.Queries;
+using Backend.Modules.TaskItem;
 
 namespace Backend
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddCqrsHandlers(this IServiceCollection services)
+        public static IServiceCollection AddModule(this IServiceCollection services)
         {
-            services.AddScoped<AddTodoCommandHandler>();
-            services.AddScoped<UpdateTodoCommandHandler>();
-            services.AddScoped<DeleteTodoCommandHandler>();
-            services.AddScoped<GetTodosQueryHandler>();
-            services.AddScoped<GetTodoByIdQueryHandler>();
+            services.AddTaskItemModule();
             return services;
         }
     }

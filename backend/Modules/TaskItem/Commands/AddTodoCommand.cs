@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Backend.Data;
-using Backend.Data.Entities;
+using backend.Modules.TaskItem.Entities;
 
-namespace Backend.Commands
+namespace Backend.Modules.TaskItem.Commands
 {
     public class AddTodoCommand
     {

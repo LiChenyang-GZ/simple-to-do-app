@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Backend.DTOs;
-using Backend.Commands;
-using Backend.Queries;
-using Backend;
+using Backend.Modules.TaskItem.Commands;
+using backend.Modules.TaskItem.DTO;
+using Backend.Modules.TaskItem.Queries;
 
-namespace Backend.Controllers;
+
+namespace Backend.Modules.TaskItem.Controller;
 
 [ApiController]
 [Route("api/[controller]")]

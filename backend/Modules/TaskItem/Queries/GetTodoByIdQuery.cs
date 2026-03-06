@@ -1,33 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
-using Backend.DTOs;
+using backend.Modules.Category.DTO;
+using backend.Modules.TaskItem.DTO;
 
-namespace Backend.Queries
+namespace Backend.Modules.TaskItem.Queries
 {
-    public class GetTodosQuery { }
+    public class GetTodoByIdQuery
+    {
+        public int Id { get; set; }
+    }
 
-    public class GetTodosQueryHandler
+    public class GetTodoByIdQueryHandler
     {
         private readonly AppDbContext _db;
-        private readonly ILogger<GetTodosQueryHandler> _logger;
+        private readonly ILogger<GetTodoByIdQueryHandler> _logger;
 
-        public GetTodosQueryHandler(AppDbContext db, ILogger<GetTodosQueryHandler> logger)
+        public GetTodoByIdQueryHandler(AppDbContext db, ILogger<GetTodoByIdQueryHandler> logger)
         {
             _db = db;
             _logger = logger;
         }
 
-        public async Task<List<TodoDto>> Handle(GetTodosQuery query, CancellationToken ct)
+        public async Task<TodoDto?> Handle(GetTodoByIdQuery query, CancellationToken ct)
         {
-            _logger.LogInformation("Fetching todos");
+            _logger.LogInformation("Fetching todo {Id}", query.Id);
 
             return await _db.Todos
                 .Include(t => t.Category)
+                .Where(t => t.Id == query.Id)
                 .Select(t => new TodoDto
                 {
                     Id = t.Id,
@@ -41,7 +41,7 @@ namespace Backend.Queries
                         Color = t.Category.Color
                     }
                 })
-                .ToListAsync(ct);
+                .FirstOrDefaultAsync(ct);
         }
     }
 }
