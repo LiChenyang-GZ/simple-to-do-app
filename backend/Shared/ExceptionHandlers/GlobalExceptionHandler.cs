@@ -1,44 +1,68 @@
-using System.Net;
-using Backend.Shared.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Backend.Shared.Exceptions;
 
 namespace Backend.Shared.ExceptionHandlers;
 
-/// <summary>
-/// Translates well-known domain exceptions into appropriate HTTP problem responses.
-/// </summary>
 public class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger;
+    private readonly IProblemDetailsService _problemDetailsService;
 
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    public GlobalExceptionHandler(
+        ILogger<GlobalExceptionHandler> logger,
+        IProblemDetailsService problemDetailsService
+    )
     {
         _logger = logger;
+        _problemDetailsService = problemDetailsService;
     }
 
     public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
-        Exception exception,
+        HttpContext httpContext, 
+        Exception exception, 
         CancellationToken cancellationToken)
     {
-        var (statusCode, title) = exception switch
+        var (statusCode, title, type) = exception switch
         {
-            NotFoundException => (HttpStatusCode.NotFound, "Not Found"),
-            ConflictException => (HttpStatusCode.Conflict, "Conflict"),
-            BadRequestException => (HttpStatusCode.BadRequest, "Bad Request"),
-            _ => (HttpStatusCode.InternalServerError, "Internal Server Error"),
+            BadRequestException => (
+                StatusCodes.Status400BadRequest,
+                "Bad Request",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.1"),
+            NotFoundException => (
+                StatusCodes.Status404NotFound,
+                "Not Found",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.5"),
+            ConflictException => (
+                StatusCodes.Status409Conflict,
+                "Conflict",
+                "https://tools.ietf.org/html/rfc9110#section-15.5.10"),
+            _ => (
+                StatusCodes.Status500InternalServerError,
+                "An unexpected error occurred",
+                "https://tools.ietf.org/html/rfc9110#section-15.6.1")
         };
 
-        _logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+        if (statusCode == StatusCodes.Status500InternalServerError)
+            _logger.LogError(exception, "An unhandled exception occurred");
+        else
+            _logger.LogWarning(exception, "{Title}: {Message}", title, exception.Message);
 
-        httpContext.Response.StatusCode = (int)statusCode;
-        await httpContext.Response.WriteAsJsonAsync(new
+        httpContext.Response.StatusCode = statusCode;
+
+        return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
-            status = (int)statusCode,
-            title,
-            detail = exception.Message,
-        }, cancellationToken);
-
-        return true;
+            HttpContext = httpContext,
+            Exception = exception,
+            ProblemDetails = new ProblemDetails
+            {
+                Status = statusCode,
+                Title = title,
+                Detail = statusCode != StatusCodes.Status500InternalServerError
+                    ? exception.Message
+                    : null,
+                Type = type
+            }
+        });
     }
 }
