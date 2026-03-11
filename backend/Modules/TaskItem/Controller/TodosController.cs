@@ -13,18 +13,21 @@ public class TodosController : ControllerBase
     private readonly AddTodoCommandHandler _addHandler;
     private readonly UpdateTodoCommandHandler _updateHandler;
     private readonly DeleteTodoCommandHandler _deleteHandler;
+    private readonly ToggleStatusCommandHandler _toggleStatusHandler;
     private readonly GetTodosQueryHandler _getAllHandler;
     private readonly GetTodoByIdQueryHandler _getByIdHandler;
     public TodosController(
         AddTodoCommandHandler addHandler,
         UpdateTodoCommandHandler updateHandler,
         DeleteTodoCommandHandler deleteHandler,
+        ToggleStatusCommandHandler toggleStatusHandler,
         GetTodosQueryHandler getAllHandler,
         GetTodoByIdQueryHandler getByIdHandler)
     {
         _addHandler = addHandler;
         _updateHandler = updateHandler;
         _deleteHandler = deleteHandler;
+        _toggleStatusHandler = toggleStatusHandler;
         _getAllHandler = getAllHandler;
         _getByIdHandler = getByIdHandler;
     }
@@ -66,5 +69,12 @@ public class TodosController : ControllerBase
         if (deletedId == null) return NotFound();
         return Ok(new { id = deletedId });
     }
-        
+
+    [HttpPatch("{id}/toggle-status")]
+    public async Task<ActionResult<TodoDto>> ToggleStatus(int id, [FromQuery] bool isDone, CancellationToken ct)
+    {
+        var result = await _toggleStatusHandler.Handle(
+            new ToggleStatusCommand { Id = id, IsDone = isDone }, ct);
+        return Ok(result);
+    }
 }

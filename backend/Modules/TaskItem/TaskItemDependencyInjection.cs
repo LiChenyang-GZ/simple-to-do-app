@@ -10,6 +10,7 @@ namespace Backend.Modules.TaskItem
             services.AddScoped<AddTodoCommandHandler>();
             services.AddScoped<UpdateTodoCommandHandler>();
             services.AddScoped<DeleteTodoCommandHandler>();
+            services.AddScoped<ToggleStatusCommandHandler>();
             services.AddScoped<GetTodosQueryHandler>();
             services.AddScoped<GetTodoByIdQueryHandler>();
             return services;

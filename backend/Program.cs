@@ -1,5 +1,6 @@
 
 using Backend.Data;
+using Backend.Shared.ExceptionHandlers;
 using Microsoft.EntityFrameworkCore;
 using Backend;
 
@@ -9,6 +10,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -32,7 +35,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors();
 app.MapControllers();
 app.Run();
+
+// Required for WebApplicationFactory<Program> in integration tests
+public partial class Program { }

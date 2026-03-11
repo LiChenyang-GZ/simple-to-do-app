@@ -16,6 +16,7 @@ namespace backend.Data.Configuration
             builder.HasKey(t => t.Id);
             builder.Property(t => t.Text).IsRequired().HasMaxLength(500);
             builder.Property(t => t.Description).HasMaxLength(2000);
+            builder.Property(t => t.UpdatedAt).IsRequired(false);
             builder.HasOne(t => t.Category)
                 .WithMany(c => c.Todos)
                 .HasForeignKey(t => t.CategoryId)
