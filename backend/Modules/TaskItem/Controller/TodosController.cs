@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Backend.Modules.TaskItem.Commands;
 using backend.Modules.TaskItem.DTO;
 using Backend.Modules.TaskItem.Queries;
-
-
-namespace Backend.Modules.TaskItem.Controller;
+using Backend.Shared.Exceptions;
+namespace Backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -40,7 +39,8 @@ public class TodosController : ControllerBase
     public async Task<ActionResult<TodoDto>> Get(int id, CancellationToken ct)
     {
         var todo = await _getByIdHandler.Handle(new GetTodoByIdQuery { Id = id }, ct);
-        if (todo == null) return NotFound();
+        if (todo == null)
+            throw new NotFoundException($"Todo with id {id} was not found.");
         return todo;
     }
 
@@ -54,16 +54,20 @@ public class TodosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateTodoCommand command, CancellationToken ct)
     {
-        if (id != command.Id) return BadRequest();
+        if (id != command.Id)
+            throw new BadRequestException("Route id does not match request body id.");
         var success = await _updateHandler.Handle(command, ct);
-        return success ? NoContent() : NotFound();
+        if (!success)
+            throw new NotFoundException($"Todo with id {id} was not found.");
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         var deletedId = await _deleteHandler.Handle(new DeleteTodoCommand { Id = id }, ct);
-        if (deletedId == null) return NotFound();
+        if (deletedId == null)
+            throw new NotFoundException($"Todo with id {id} was not found.");
         return Ok(new { id = deletedId });
     }
         

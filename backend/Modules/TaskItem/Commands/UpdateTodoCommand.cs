@@ -7,7 +7,6 @@ namespace Backend.Modules.TaskItem.Commands
     {
         [Required]
         public int Id { get; set; }
-        [Required]
         public string Text { get; set; } = null!;
         public string? Description { get; set; }
         public bool Completed { get; set; }
